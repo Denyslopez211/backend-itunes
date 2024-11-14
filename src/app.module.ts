@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 
 import { SearchModule } from './search/search.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     CacheModule.register({
-      ttl: 3600, // 1 hour
-      max: 10, // Maximum number of items in cache
+      ttl: +process.env.TTL,
+      max: +process.env.MAX,
     }),
     SearchModule,
   ],

@@ -7,15 +7,14 @@ import { buildResponse, getFilteredTracks, getUniqueAlbums } from './data-util';
 
 @Injectable()
 export class SearchService {
-  private readonly ITUNES_API_URL = 'https://itunes.apple.com/search';
   constructor(private readonly httpService: HttpService) {}
 
-  @CacheKey('itunes-search')
-  @CacheTTL(3600)
+  @CacheKey(process.env.CACHE_KEY)
+  @CacheTTL(+process.env.TTL)
   async fetchTracks(name: string): Promise<SearchResponse> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`${this.ITUNES_API_URL}?term=${name}`),
+        this.httpService.get(`${process.env.URL_BASE}?term=${name}`),
       );
       const data = response.data;
       const filteredTracks = getFilteredTracks(data.results, name);
